@@ -15,8 +15,8 @@ class ApplicationController < ActionController::API
     render json: { message: error.message }, status: :unprocessable_entity
   end
 
-  def parameter_missing(error)
+  def parameter_missing
     message = I18n.t('api.errors.parameter_missing')
-    render json: { message: message }, status: :bad_request
+    render json: { message: }, status: :bad_request
   end
 end
