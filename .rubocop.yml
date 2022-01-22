@@ -14,3 +14,8 @@ Style/Documentation:
 
 Metrics/BlockLength:
  IgnoredMethods: ['describe', 'context']
+
+Style/ClassAndModuleChildren:
+  EnforcedStyle: 'compact'
+  Exclude:
+    - 'config/application.rb'
