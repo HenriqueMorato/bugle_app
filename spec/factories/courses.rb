@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :course do
-    title { 'MyString' }
-    description { 'MyText' }
+    title { Faker::Educator.course_name }
+    description { Faker::Lorem.sentence }
   end
 end
