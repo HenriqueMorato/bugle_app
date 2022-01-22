@@ -1,0 +1,16 @@
+require:
+  - rubocop-rails
+
+AllCops:
+ TargetRubyVersion: 3.1
+ NewCops: enable
+ Exclude:
+   - 'vendor/**/*'
+   - 'db/**/*'
+   - 'bin/**/*'
+
+Style/Documentation:
+ Enabled: false
+
+Metrics/BlockLength:
+ IgnoredMethods: ['describe', 'context']
