@@ -23,9 +23,20 @@ describe 'User Authentication' do
       expect(response).to have_http_status(404)
       expect(parsed_body[:message]).to eq('User could not be found')
     end
+
+    it 'with incorrect password' do
+      user = create(:user)
+
+      post '/api/sign_in',
+           params: { email: user.email, password: '1234567' },
+           as: :json
+
+      expect(response).to have_http_status(401)
+      expect(parsed_body[:message]).to eq('Invalid email or password.')
+    end
   end
 
-  context 'signed in with token' do
+  context 'with with token' do
     it 'access routes' do
       get '/api/v1/courses', as: :json, headers: authenticate_header
       expect(response).to have_http_status(200)

@@ -22,17 +22,4 @@ class ApplicationController < ActionController::API
     message = I18n.t('api.errors.parameter_missing')
     render json: { message: }, status: :bad_request
   end
-
-  def authenticate_user!
-    raise JWT::VerificationError if request.headers['Authorization'].blank?
-
-    payload = JsonWebToken.decode(request.headers['Authorization'])
-    @user_id = payload[:user_id]
-  rescue JWT::ExpiredSignature, JWT::VerificationError, JWT::DecodeError
-    head :unauthorized
-  end
-
-  def current_user
-    @current_user ||= @user_id && User.find(@user_id)
-  end
 end

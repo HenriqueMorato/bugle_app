@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  devise_for :users, path: 'api', controllers: {
+  devise_for :users, path: 'api/', controllers: {
     sessions: 'api/users/sessions'
   }
   namespace :api, constraints: ->(req) { req.format == :json } do
