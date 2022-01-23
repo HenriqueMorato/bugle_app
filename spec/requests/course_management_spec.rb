@@ -48,7 +48,7 @@ describe 'Course Management' do
 
       expect(response).to have_http_status(404)
       expect(parsed_body[:message]).to eq(
-        'Couldn\'t find Course with \'id\'=000'
+        'Course could not be found'
       )
     end
   end

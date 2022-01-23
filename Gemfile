@@ -8,6 +8,8 @@ ruby '3.1.0'
 gem 'rails', '~> 7.0.1'
 
 gem 'bootsnap', require: false
+gem 'devise', '~> 4.8'
+gem 'jwt', '~> 2.3'
 gem 'pg', '~> 1.1'
 gem 'puma', '~> 5.0'
 

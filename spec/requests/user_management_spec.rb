@@ -47,7 +47,7 @@ describe 'User Management' do
 
       expect(response).to have_http_status(404)
       expect(parsed_body[:message]).to eq(
-        'Couldn\'t find User with \'id\'=000'
+        'User could not be found'
       )
     end
   end
@@ -69,26 +69,19 @@ describe 'User Management' do
 
       expect(response).to have_http_status(422)
       expect(parsed_body[:message]).to include(
-        "Validation failed: Name can't be blank, Email can't be blank"
+        "Validation failed: Email can't be blank, Password can't be blank, "\
+        "Name can't be blank"
       )
     end
 
     it 'and email should be unique' do
-      user = create(:user).attributes.slice('email', 'name')
-      post '/api/v1/users', params: user, as: :json
+      user = create(:user)
+      post '/api/v1/users', params: attributes_for(:user, email: user.email),
+                            as: :json
 
       expect(response).to have_http_status(422)
       expect(parsed_body[:message]).to eq(
         'Validation failed: Email has already been taken'
-      )
-    end
-
-    it 'should return errors when params not found' do
-      post '/api/v1/users', params: {}, as: :json
-
-      expect(response).to have_http_status(400)
-      expect(parsed_body[:message]).to eq(
-        'Parameters necessary for this request could not be found'
       )
     end
   end

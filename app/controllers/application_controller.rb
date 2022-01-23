@@ -8,7 +8,9 @@ class ApplicationController < ActionController::API
   private
 
   def not_found(error)
-    render json: { message: error.message }, status: :not_found
+    render status: :not_found,
+           json: { message: I18n.t('api.errors.not_found',
+                   model: error.exception.model) }
   end
 
   def record_invalid(error)
