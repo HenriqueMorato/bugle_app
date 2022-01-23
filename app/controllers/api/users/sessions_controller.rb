@@ -2,6 +2,7 @@
 
 class Api::Users::SessionsController < Devise::SessionsController
   respond_to :json
+  skip_before_action :authenticate_user!
 
   def create
     user = User.find_by!(email: sign_in_params[:email])

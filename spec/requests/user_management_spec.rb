@@ -4,6 +4,10 @@ require 'rails_helper'
 
 describe 'User Management' do
   context 'GET /api/v1/users' do
+    before do
+      allow_any_instance_of(ApplicationController)
+        .to receive(:authenticate_user!)
+    end
     it 'should return users' do
       create_list(:user, 3)
 
@@ -33,7 +37,7 @@ describe 'User Management' do
     it 'should return a user' do
       user = create(:user, email: 'jane@bugle.com', name: 'Jane Doe')
 
-      get "/api/v1/users/#{user.id}", as: :json
+      get "/api/v1/users/#{user.id}", as: :json, headers: authenticate_header
 
       expect(response).to have_http_status(200)
       expect(response.content_type).to include('application/json')
@@ -43,7 +47,7 @@ describe 'User Management' do
     end
 
     it 'should return 404 if user does not exist' do
-      get '/api/v1/users/000', as: :json
+      get '/api/v1/users/000', as: :json, headers: authenticate_header
 
       expect(response).to have_http_status(404)
       expect(parsed_body[:message]).to eq(
@@ -56,7 +60,8 @@ describe 'User Management' do
     it 'should create a user' do
       user = attributes_for(:user)
 
-      post '/api/v1/users', params: user, as: :json
+      post '/api/v1/users', params: user, as: :json,
+                            headers: authenticate_header
 
       expect(response).to have_http_status(201)
       expect(response.content_type).to include('application/json')
@@ -65,7 +70,8 @@ describe 'User Management' do
     end
 
     it 'should return errors when user invalid' do
-      post '/api/v1/users', params: { user: { something: '' } }, as: :json
+      post '/api/v1/users', params: { user: { something: '' } }, as: :json,
+                            headers: authenticate_header
 
       expect(response).to have_http_status(422)
       expect(parsed_body[:message]).to include(
@@ -77,7 +83,7 @@ describe 'User Management' do
     it 'and email should be unique' do
       user = create(:user)
       post '/api/v1/users', params: attributes_for(:user, email: user.email),
-                            as: :json
+                            as: :json, headers: authenticate_header
 
       expect(response).to have_http_status(422)
       expect(parsed_body[:message]).to eq(
