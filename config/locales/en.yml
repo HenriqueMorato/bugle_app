@@ -2,3 +2,4 @@ en:
   api:
     errors:
       parameter_missing: 'Parameters necessary for this request could not be found'
+      not_found: '%{model} could not be found'
