@@ -2,8 +2,8 @@
 
 class Api::V1::UsersController < ApplicationController
   def index
-    @users = User.all
-    render json: @users
+    @users = User.user_role
+    render json: @users.as_json(except: %i[role])
   end
 
   def show

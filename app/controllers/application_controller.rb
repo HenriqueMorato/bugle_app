@@ -9,7 +9,7 @@ class ApplicationController < ActionController::API
   private
 
   def authorize_admin!
-    head 403 unless current_user.admin?
+    head :forbidden unless current_user.admin_role?
   end
 
   def not_found(error)

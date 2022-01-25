@@ -7,5 +7,5 @@ class User < ApplicationRecord
     validates :name
   end
 
-  enum role: { user: 'user', admin: 'admin' }
+  enum role: { user: 'user', admin: 'admin' }, _suffix: true
 end
