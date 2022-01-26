@@ -68,13 +68,20 @@ describe 'Course Management' do
     end
 
     it 'Only users logged in could access route' do
-      get '/api/v1/courses', as: :json
+      course = create(:course, title: 'The Fellowship of the Course',
+                               description: 'A good course to watch')
+
+      get "/api/v1/courses/#{course.id}", as: :json
 
       expect(response).to have_http_status(401)
     end
 
     it 'Only admins could access route' do
-      get '/api/v1/courses', as: :json, headers: authenticate_header
+      course = create(:course, title: 'The Fellowship of the Course',
+                               description: 'A good course to watch')
+
+      get "/api/v1/courses/#{course.id}", as: :json,
+                                          headers: authenticate_header
 
       expect(response).to have_http_status(403)
     end
@@ -114,13 +121,18 @@ describe 'Course Management' do
     end
 
     it 'Only users logged in could access route' do
-      get '/api/v1/courses', as: :json
+      course = attributes_for(:course)
+
+      post '/api/v1/courses', params: course, as: :json
 
       expect(response).to have_http_status(401)
     end
 
     it 'Only admins could access route' do
-      get '/api/v1/courses', as: :json, headers: authenticate_header
+      course = attributes_for(:course)
+
+      post '/api/v1/courses', params: course, as: :json,
+                              headers: authenticate_header
 
       expect(response).to have_http_status(403)
     end
