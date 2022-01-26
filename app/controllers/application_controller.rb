@@ -8,6 +8,10 @@ class ApplicationController < ActionController::API
 
   private
 
+  def authorize_admin!
+    head :forbidden unless current_user.admin_role?
+  end
+
   def not_found(error)
     render status: :not_found,
            json: { message: I18n.t('api.errors.not_found',

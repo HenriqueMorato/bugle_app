@@ -3,33 +3,50 @@
 require 'rails_helper'
 
 describe 'User Management' do
+  let(:admin) { create(:user, :admin) }
   context 'GET /api/v1/users' do
-    before do
-      allow_any_instance_of(ApplicationController)
-        .to receive(:authenticate_user!)
+    context 'logged in' do
+      before do
+        allow_any_instance_of(ApplicationController)
+          .to receive(:authenticate_user!)
+      end
+
+      it 'admins are not showed and exclude columns' do
+        create(:user, :admin)
+        create_list(:user, 3)
+
+        get '/api/v1/users', as: :json
+
+        expect(response).to have_http_status(200)
+        expect(response.content_type).to include('application/json')
+        expect(parsed_body.count).to eq(3)
+        expect(parsed_body.first.keys).to contain_exactly(
+          :id, :email, :name, :created_at, :updated_at
+        )
+      end
+
+      it 'should always return and array' do
+        get '/api/v1/users', as: :json
+
+        expect(parsed_body).to eq([])
+      end
+
+      it 'should have ACCEPT header' do
+        expect { get '/api/v1/users' }
+          .to raise_error(ActionController::RoutingError)
+      end
     end
-    it 'should return users' do
-      create_list(:user, 3)
 
-      get '/api/v1/users', as: :json
+    it 'Only users logged in could access route' do
+      get '/api/v1/courses', as: :json
 
-      expect(response).to have_http_status(200)
-      expect(response.content_type).to include('application/json')
-      expect(parsed_body.count).to eq(3)
-      expect(parsed_body.first.keys).to contain_exactly(
-        :id, :email, :name, :created_at, :updated_at
-      )
+      expect(response).to have_http_status(401)
     end
 
-    it 'should always return and array' do
-      get '/api/v1/users', as: :json
+    it 'Only admins could access route' do
+      get '/api/v1/courses', as: :json, headers: authenticate_header
 
-      expect(parsed_body).to eq([])
-    end
-
-    it 'should have ACCEPT header' do
-      expect { get '/api/v1/users' }
-        .to raise_error(ActionController::RoutingError)
+      expect(response).to have_http_status(403)
     end
   end
 
@@ -37,7 +54,8 @@ describe 'User Management' do
     it 'should return a user' do
       user = create(:user, email: 'jane@bugle.com', name: 'Jane Doe')
 
-      get "/api/v1/users/#{user.id}", as: :json, headers: authenticate_header
+      get "/api/v1/users/#{user.id}", as: :json,
+                                      headers: authenticate_header(admin)
 
       expect(response).to have_http_status(200)
       expect(response.content_type).to include('application/json')
@@ -47,12 +65,24 @@ describe 'User Management' do
     end
 
     it 'should return 404 if user does not exist' do
-      get '/api/v1/users/000', as: :json, headers: authenticate_header
+      get '/api/v1/users/000', as: :json, headers: authenticate_header(admin)
 
       expect(response).to have_http_status(404)
       expect(parsed_body[:message]).to eq(
         'User could not be found'
       )
+    end
+
+    it 'Only users logged in could access route' do
+      get '/api/v1/courses', as: :json
+
+      expect(response).to have_http_status(401)
+    end
+
+    it 'Only admins could access route' do
+      get '/api/v1/courses', as: :json, headers: authenticate_header
+
+      expect(response).to have_http_status(403)
     end
   end
 
@@ -61,7 +91,7 @@ describe 'User Management' do
       user = attributes_for(:user)
 
       post '/api/v1/users', params: user, as: :json,
-                            headers: authenticate_header
+                            headers: authenticate_header(admin)
 
       expect(response).to have_http_status(201)
       expect(response.content_type).to include('application/json')
@@ -71,7 +101,7 @@ describe 'User Management' do
 
     it 'should return errors when user invalid' do
       post '/api/v1/users', params: { user: { something: '' } }, as: :json,
-                            headers: authenticate_header
+                            headers: authenticate_header(admin)
 
       expect(response).to have_http_status(422)
       expect(parsed_body[:message]).to include(
@@ -83,12 +113,24 @@ describe 'User Management' do
     it 'and email should be unique' do
       user = create(:user)
       post '/api/v1/users', params: attributes_for(:user, email: user.email),
-                            as: :json, headers: authenticate_header
+                            as: :json, headers: authenticate_header(admin)
 
       expect(response).to have_http_status(422)
       expect(parsed_body[:message]).to eq(
         'Validation failed: Email has already been taken'
       )
+    end
+
+    it 'Only users logged in could access route' do
+      get '/api/v1/courses', as: :json
+
+      expect(response).to have_http_status(401)
+    end
+
+    it 'Only admins could access route' do
+      get '/api/v1/courses', as: :json, headers: authenticate_header
+
+      expect(response).to have_http_status(403)
     end
   end
 end

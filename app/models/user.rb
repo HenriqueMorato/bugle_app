@@ -6,4 +6,6 @@ class User < ApplicationRecord
   with_options presence: true do
     validates :name
   end
+
+  enum role: { user: 'user', admin: 'admin' }, _suffix: true
 end

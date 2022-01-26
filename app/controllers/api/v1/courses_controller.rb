@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Api::V1::CoursesController < ApplicationController
+  before_action :authorize_admin!
   before_action :set_course, only: %i[show]
 
   def index

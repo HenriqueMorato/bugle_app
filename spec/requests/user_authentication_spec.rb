@@ -38,7 +38,8 @@ describe 'User Authentication' do
 
   context 'with with token' do
     it 'access routes' do
-      get '/api/v1/courses', as: :json, headers: authenticate_header
+      admin = create(:user, :admin)
+      get '/api/v1/courses', as: :json, headers: authenticate_header(admin)
       expect(response).to have_http_status(200)
     end
 
