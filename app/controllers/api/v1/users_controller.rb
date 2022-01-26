@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Api::V1::UsersController < ApplicationController
+  before_action :authorize_admin!
+
   def index
     @users = User.user_role
     render json: @users.as_json(except: %i[role])
