@@ -7,6 +7,7 @@ ruby '3.1.0'
 
 gem 'rails', '~> 7.0.1'
 
+gem 'active_storage_validations'
 gem 'bootsnap', require: false
 gem 'devise', '~> 4.8'
 gem 'jwt', '~> 2.3'
