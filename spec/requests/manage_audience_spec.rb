@@ -79,4 +79,46 @@ describe 'Manage audiance' do
       expect(response).to have_http_status(403)
     end
   end
+
+  context 'DELETE /api/v1/courses/:course_id/audiences' do
+    it 'admin can view course audience' do
+      admin = create(:user, :admin)
+      audience = create(:audience, course:)
+
+      delete "/api/v1/courses/#{course.id}/audiences/#{audience.user.id}",
+             as: :json,
+             headers: authenticate_header(admin)
+
+      expect(response).to have_http_status(204)
+    end
+
+    it 'if not found return error' do
+      admin = create(:user, :admin)
+      delete "/api/v1/courses/#{course.id}/audiences/000",
+             as: :json,
+             headers: authenticate_header(admin)
+
+      expect(response).to have_http_status(404)
+      expect(parsed_body[:message]).to eq('Audience could not be found')
+    end
+
+    it 'Only users logged in could access route' do
+      audience = create(:audience, course:)
+
+      delete "/api/v1/courses/#{course.id}/audiences/#{audience.user.id}",
+             as: :json
+
+      expect(response).to have_http_status(401)
+    end
+
+    it 'Only admins could access route' do
+      audience = create(:audience, course:)
+
+      delete "/api/v1/courses/#{course.id}/audiences/#{audience.user.id}",
+             as: :json,
+             headers: authenticate_header
+
+      expect(response).to have_http_status(403)
+    end
+  end
 end
