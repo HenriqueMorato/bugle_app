@@ -9,9 +9,9 @@ RUN apt-get install -y --no-install-recommends \
 
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
 RUN locale-gen
-RUN export LC_ALL="en_US.utf8"
-RUN export VISUAL=vim
-RUN export EDITOR="$VISUAL"
+ENV LC_ALL="en_US.utf8"
+ENV VISUAL=vim
+ENV EDITOR="$VISUAL"
 
 WORKDIR /bugle_app
 
