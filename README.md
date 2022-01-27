@@ -486,4 +486,115 @@ curl \
 Status: 204
 ```
 
+### Register audiences
 
+```http
+POST /api/v1/courses/{course_id}/audiences
+```
+
+#### Parameters
+
+| Name | Type | In | Description |
+| :--- | :--- | :---| :--- |
+| `accept` | `string` | header | **Required** Set to 'application/json' |
+| `Authentication` | `string` | header | **Required** Authentication token |
+
+#### Code sample
+
+```shell
+curl \
+  -X POST \
+  -H "Accept: application/json" \
+  -H "Authorization: [TOKEN]" \
+  http://localhost:3000/api/v1/courses/1/audiences
+```
+
+#### Response
+
+```
+Status: 201
+```
+
+```json
+{
+  "id": 1,
+  "course_id": 1,
+  "user_id": 1,
+  "created_at": "2022-01-27T23:39:35.661Z",
+  "updated_at": "2022-01-27T23:39:35.661Z"
+}
+```
+
+### List Audiences
+
+Only admin can access this route
+
+```http
+GET /api/v1/courses/{course_id}/audiences/{user_id}
+```
+
+#### Parameters
+
+| Name | Type | In | Description |
+| :--- | :--- | :---| :--- |
+| `accept` | `string` | header | **Required** Set to 'application/json' |
+| `Authentication` | `string` | header | **Required** Authentication token |
+
+#### Code sample
+
+```shell
+curl \
+  -X GET \
+  -H "Accept: application/json" \
+  -H "Authorization: [TOKEN]" \
+  http://localhost:3000/api/v1/courses/1/audiences
+```
+
+#### Response
+
+```
+Status: 200
+```
+
+```json
+[
+  {
+    "id": 1,
+    "course_id": 1,
+    "user_id": 1,
+    "created_at": "2022-01-27T23:39:35.661Z",
+    "updated_at": "2022-01-27T23:39:35.661Z"
+  }
+]
+```
+
+### Remove Audience
+
+Only admins can access this route
+
+```http
+DELETE /api/v1/courses/{course_id}/audiences/{user_id}
+```
+
+#### Parameters
+
+| Name | Type | In | Description |
+| :--- | :--- | :---| :--- |
+| `accept` | `string` | header | **Required** Set to 'application/json' |
+| `Authentication` | `string` | header | **Required** Authentication token |
+
+#### Code sample
+
+```shell
+curl \
+  -X DELETE \
+  -H "Accept: application/json" \
+  -H "Authorization: [TOKEN]" \
+  http://localhost:3000/api/v1/courses/1/audiences/1
+```
+
+#### Response
+
+```
+Status: 204
+```

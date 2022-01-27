@@ -11,6 +11,7 @@ Rails.application.routes.draw do
     namespace :v1 do
       resources :courses, only: %i[index show create] do
         resources :contents, only: %i[create destroy], shallow: true
+        resources :audiences, only: %i[index create destroy], param: :user_id
       end
       resources :users, only: %i[index show create]
     end
