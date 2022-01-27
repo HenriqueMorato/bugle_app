@@ -8,7 +8,7 @@ class Api::V1::ContentsController < ApplicationController
       content_params.with_defaults(user: current_user,
                                    course_id: params[:course_id])
     )
-    render json: @content, status: :created
+    render json: @content.as_json(except: %i[user_id]), status: :created
   end
 
   def destroy
@@ -20,6 +20,6 @@ class Api::V1::ContentsController < ApplicationController
   private
 
   def content_params
-    params.require(:content).permit(:name, :file)
+    params.permit(:name, :file)
   end
 end

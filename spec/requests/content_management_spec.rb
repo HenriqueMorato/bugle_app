@@ -17,6 +17,9 @@ describe 'Content Management' do
       expect(response).to have_http_status(201)
       expect(response.content_type).to include('application/json')
       expect(parsed_body[:name]).to eq('First lesson')
+      expect(parsed_body.keys).to contain_exactly(
+        :id, :name, :course_id, :created_at, :updated_at
+      )
       expect(parsed_body[:course_id]).to eq(course.id)
     end
 
@@ -33,22 +36,16 @@ describe 'Content Management' do
       )
     end
 
-    it 'content should receive params' do
-      post '/api/v1/courses/000/contents',
-           as: :json,
-           headers: authenticate_header(admin),
-           params: {}
-
-      expect(response).to have_http_status(400)
-      expect(response.content_type).to include('application/json')
-      expect(parsed_body[:message]).to eq(
-        'Parameters necessary for this request could not be found'
-      )
-    end
-
-    it 'should have ACCEPT header' do
+    it 'could have ACCEPT header' do
       expect { post "/api/v1/courses/#{course.id}/contents" }
         .to raise_error(ActionController::RoutingError)
+    end
+
+    it 'could have multipart_form header' do
+      post '/api/v1/courses/000/contents',
+           headers: { 'Content-Type': 'multipart/form-data' }
+
+      expect(response).to redirect_to('/')
     end
 
     it 'Only users logged in could access route' do
