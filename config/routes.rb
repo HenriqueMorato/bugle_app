@@ -7,9 +7,11 @@ Rails.application.routes.draw do
     post 'api/sign_up', to: 'api/users/registrations#create', as: :user_registration
   end
 
-  namespace :api, constraints: ->(req) { req.format == :json } do
+  namespace :api, constraints: RestrictFormatTypes.new do
     namespace :v1 do
-      resources :courses, only: %i[index show create]
+      resources :courses, only: %i[index show create] do
+        resources :contents, only: %i[create destroy], shallow: true
+      end
       resources :users, only: %i[index show create]
     end
   end
