@@ -19,7 +19,7 @@ describe 'Manage audiance' do
 
     it 'user cannot be part of same course audience' do
       user = create(:user)
-      create(:audience, user: user, course: course)
+      create(:audience, user:, course:)
 
       post "/api/v1/courses/#{course.id}/audiences", as: :json,
                                                      headers: authenticate_header(user)
@@ -39,6 +39,44 @@ describe 'Manage audiance' do
       post "/api/v1/courses/#{course.id}/audiences", as: :json
 
       expect(response).to have_http_status(401)
+    end
+  end
+
+  context 'GET /api/v1/courses/:course_id/audiences' do
+    it 'admin can view course audience' do
+      admin = create(:user, :admin)
+      create_list(:audience, 3, course:)
+
+      get "/api/v1/courses/#{course.id}/audiences", as: :json,
+                                                    headers: authenticate_header(admin)
+
+      expect(response).to have_http_status(200)
+      expect(response.content_type).to include('application/json')
+      expect(parsed_body.count).to eq(3)
+      expect(parsed_body.first.keys).to contain_exactly(
+        :id, :course_id, :user_id, :created_at, :updated_at
+      )
+    end
+
+    it 'should always return and array' do
+      admin = create(:user, :admin)
+      get "/api/v1/courses/#{course.id}/audiences", as: :json,
+                                                    headers: authenticate_header(admin)
+
+      expect(parsed_body).to eq([])
+    end
+
+    it 'Only users logged in could access route' do
+      get "/api/v1/courses/#{course.id}/audiences", as: :json
+
+      expect(response).to have_http_status(401)
+    end
+
+    it 'Only admins could access route' do
+      get "/api/v1/courses/#{course.id}/audiences", as: :json,
+                                                    headers: authenticate_header
+
+      expect(response).to have_http_status(403)
     end
   end
 end
