@@ -11,6 +11,12 @@ class Api::V1::ContentsController < ApplicationController
     render json: @content, status: :created
   end
 
+  def destroy
+    @content = Content.find(params[:id])
+    @content.destroy!
+    head :no_content
+  end
+
   private
 
   def content_params

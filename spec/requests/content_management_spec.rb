@@ -64,4 +64,33 @@ describe 'Content Management' do
       expect(response).to have_http_status(403)
     end
   end
+
+  context 'DELETE /api/v1/contents/:id' do
+    let(:content) { create(:content) }
+    it 'admins can remove content' do
+      delete "/api/v1/contents/#{content.id}",
+             as: :json,
+             headers: authenticate_header(admin)
+
+      expect(response).to have_http_status(204)
+    end
+
+    it 'should have ACCEPT header' do
+      expect { delete "/api/v1/contents/#{content.id}" }
+        .to raise_error(ActionController::RoutingError)
+    end
+
+    it 'Only users logged in could access route' do
+      delete "/api/v1/contents/#{content.id}", as: :json
+
+      expect(response).to have_http_status(401)
+    end
+
+    it 'Only admins could access route' do
+      delete "/api/v1/contents/#{content.id}", as: :json,
+                                               headers: authenticate_header
+
+      expect(response).to have_http_status(403)
+    end
+  end
 end

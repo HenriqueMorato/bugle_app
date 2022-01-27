@@ -10,7 +10,7 @@ Rails.application.routes.draw do
   namespace :api, constraints: ->(req) { req.format == :json } do
     namespace :v1 do
       resources :courses, only: %i[index show create] do
-        resources :contents, only: %i[create]
+        resources :contents, only: %i[create destroy], shallow: true
       end
       resources :users, only: %i[index show create]
     end
