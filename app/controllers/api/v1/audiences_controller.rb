@@ -18,4 +18,8 @@ class Api::V1::AudiencesController < ApplicationController
     @audience.destroy!
     head :no_content
   end
+
+  def courses
+    render json: current_user.courses
+  end
 end
