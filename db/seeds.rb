@@ -2,7 +2,7 @@ admin = User.create!(email: 'admin@admin.com', name: 'Admin',
                      password: '12345678',
                      role: :admin)
 
-User.create!(email: 'user@user.com', name: 'User', password: '12345678')
+user = User.create!(email: 'user@user.com', name: 'User', password: '12345678')
 
 course = Course.create!(title: 'Health Science 101',
                description: 'Et sit officiis eaque.')
@@ -21,3 +21,5 @@ content.file.attach(
   filename: 'dramatic_chipmunk.mp4',
   content_type: 'video/mp4'
 )
+
+Audience.create!(user: user, course: course)

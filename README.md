@@ -1,9 +1,6 @@
 
 # LMS
 
-
-
-
 ## Development
 
 To test the app the best option is to use Docker since it sets all the environment variables and requirements.
@@ -28,7 +25,6 @@ docker-compose run --service-ports --rm web bash
 
 Remember to run `bin/setup` to set up the database and seed it with `rails db:seed`
 
-
 ## Major tools
 
 - Ruby (v3.1.0)
@@ -40,6 +36,8 @@ Remember to run `bin/setup` to set up the database and seed it with `rails db:se
 
 - [ ] Better API Standardization
 - [ ] Content could be and HTML page, audio, and other types
+- [ ] Better role separation of routes
+
 ## API Doc
 
 To consume the API first you need to create an Admin or User and log in
@@ -597,4 +595,100 @@ curl \
 
 ```
 Status: 204
+```
+
+### User Course List
+
+```http
+GET /api/v1/my-courses
+```
+
+#### Parameters
+
+| Name | Type | In | Description |
+| :--- | :--- | :---| :--- |
+| `accept` | `string` | header | **Required** Set to 'application/json' |
+| `Authentication` | `string` | header | **Required** Authentication token |
+
+#### Code sample
+
+```shell
+curl \
+  -X POST \
+  -H "Accept: application/json" \
+  -H "Authorization: [TOKEN]" \
+  http://localhost:3000/api/v1/my-courses
+```
+
+#### Response
+
+```
+Status: 200
+```
+
+```json
+[
+  {
+    "id": 1,
+    "title": "Health Science 101",
+    "description": "Et sit officiis eaque.",
+    "created_at": "2022-01-28T00:30:46.745Z",
+    "updated_at": "2022-01-28T00:30:46.745Z"
+  }
+]
+```
+
+### User Content
+
+```http
+GET /api/v1/my-courses/{course_id}/take
+```
+
+#### Parameters
+
+| Name | Type | In | Description |
+| :--- | :--- | :---| :--- |
+| `accept` | `string` | header | **Required** Set to 'application/json' |
+| `Authentication` | `string` | header | **Required** Authentication token |
+
+#### Code sample
+
+```shell
+curl \
+  -X GET \
+  -H "Accept: application/json" \
+  -H "Authorization: [TOKEN]" \
+  http://localhost:3000/api/v1/my-courses/1/take
+```
+
+#### Response
+
+```
+Status: 200
+```
+
+```json
+{
+  "id": 1,
+  "title": "Health Science 101",
+  "description": "Et sit officiis eaque.",
+  "created_at": "2022-01-28T00:30:46.745Z",
+  "updated_at": "2022-01-28T00:30:46.745Z",
+  "contents": [
+    {
+      "id": 1,
+      "name": "A video",
+      "created_at": "2022-01-28T00:30:46.781Z",
+      "updated_at":"2022-01-28T00:30:46.832Z",
+      "file_url":"http://path/to/dramatic_chipmunk.mp4
+    },
+    {
+      "id": 2,
+      "name": "Another video",
+      "created_at": "2022-01-28T00:30:46.840Z",
+      "updated_at":"2022-01-28T00:30:46.857Z",
+      "file_url":"http://path/to/dramatic_chipmunk.mp4
+    }
+  ]
+}
 ```
