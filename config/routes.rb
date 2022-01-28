@@ -14,8 +14,10 @@ Rails.application.routes.draw do
         resources :audiences, only: %i[index create destroy], param: :user_id
       end
       resources :users, only: %i[index show create]
+
       scope 'my-courses' do
         get '/', to: 'audiences#courses'
+        get '/:course_id/take', to: 'audiences#take'
       end
     end
   end
