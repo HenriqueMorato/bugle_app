@@ -10,4 +10,8 @@ class Content < ApplicationRecord
     validates :name
   end
   validates :file, content_type: %r{\Avideo/.*\z}
+
+  def file_url
+    Rails.application.routes.url_helpers.url_for(file)
+  end
 end

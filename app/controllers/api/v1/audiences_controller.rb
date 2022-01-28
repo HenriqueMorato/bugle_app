@@ -18,4 +18,17 @@ class Api::V1::AudiencesController < ApplicationController
     @audience.destroy!
     head :no_content
   end
+
+  def courses
+    render json: current_user.courses
+  end
+
+  def take
+    @course = current_user.courses.find(params[:course_id])
+    render json: @course.as_json(
+      include: {
+        contents: { methods: :file_url, except: %i[course_id user_id] }
+      }
+    )
+  end
 end

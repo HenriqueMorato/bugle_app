@@ -23,4 +23,17 @@ describe Content do
       )
     end
   end
+
+  context '#file_url' do
+    it 'generate a link' do
+      content = build(:content)
+      content.file.attach(
+        io: File.open(Rails.root.join('spec/fixtures/files/sample_image.jpg')),
+        filename: 'sample_image.jpg',
+        content_type: 'image/jpeg'
+      )
+      content.save
+      expect(content.file_url).to include('http://')
+    end
+  end
 end
